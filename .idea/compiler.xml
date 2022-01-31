@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="17">
+      <module name="imdb-multiplatform.commonMain" target="17" />
+      <module name="imdb-multiplatform.commonTest" target="17" />
+      <module name="imdb-multiplatform.desktopMain" target="17" />
+      <module name="imdb-multiplatform.desktopTest" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

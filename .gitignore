@@ -1,0 +1,31 @@
+# IntelliJ
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/misc.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/modules.xml
+.idea/navEditor.xml
+.idea/dictionaries
+.idea/libraries
+.idea/caches
+
+# Android Studio files
+.log
+.gradle
+.cxx
+/build
+/captures
+
+# Local configuration file (sdk path, etc)
+/local.properties
+
+# Mac OS hidden file 
+.DS_Store
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+
+# Git
+*.orig
