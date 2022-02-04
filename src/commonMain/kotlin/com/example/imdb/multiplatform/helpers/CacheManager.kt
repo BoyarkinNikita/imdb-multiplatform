@@ -63,6 +63,8 @@ class CacheManager(
         byteArrayCache.removeIfExists(cacheKey(keyBuilder))
     }.getOrNull() ?: false
 
+    fun clear(): Boolean = byteArrayCache.clear()
+
     private inline fun internalCache(
         keyBuilder: Array<*>,
         aliveTimeMs: ULong = Long.MAX_VALUE.toULong(),

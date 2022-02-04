@@ -14,13 +14,24 @@ Stack:
 Project structure:
 - Build script: `build.gradle.kts`
 - Common code: `src/commonMain`
-- Target platforms code: `src/androidMain`, `src/desktopMain`, `src/webMain`
+- Target platform code: `src/androidMain`, `src/desktopMain`, `src/webMain`
+- Common tests: `src/commonTest`
+- Target platform tests: `src/androidTest`, `src/desktopTest`
 - Versions file: `buildSrc/src/main/kotlin/Ver.kt`
 
 How to build:
 - Desktop target: `./gradlew run` (requires Ver.jvmJava to launch, better 11 or 17)
 - Android target: `./gradlew assembleDebug` (requires Ver.androidJava to launch, better 8 or 11)
 - Web target: `./gradlew webBrowserRun` (⚠️ don't work, we have to wait new Compose Multiplatform + Skiko versions ⚠️)
+
+Run tests:
+- Desktop tests (+ common tests): `./gradlew desktopTest`
+- Android tests (+ common tests): `./gradlew testDebugUnitTest`
+
+To run tests in Android Studio / IntelliJ you have to create new configuration (`Edit Configurations... -> Add New Configuration -> Gradle`) with parameters:
+- Gradle project: `imdb-multiplatform`
+- Tasks: `gradleTaskName` (e.g. `desktopTest`)
+- Arguments: `--tests *`
 
 ### Tasks
 
@@ -30,6 +41,7 @@ DONE:
 - Imdb API and images loading.
 - Disk Caching for Imdb API and images.
 - Movies list Pagination.
+- Unit tests for cache.
 
 TODO:
 - Movie search.
@@ -37,4 +49,6 @@ TODO:
 - Movie news list screen.
 - Movie news details screen.
 - News API and caching.
+- UI tests.
+- More unit tests.
 

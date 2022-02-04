@@ -1,6 +1,5 @@
 package com.example.imdb.multiplatform.helper
 
-import android.content.Context
 import com.example.imdb.multiplatform.android.BuildConfig.VERSION_CODE
 import com.example.imdb.multiplatform.helpers.ByteArrayCache
 import com.jakewharton.disklrucache.DiskLruCache
@@ -11,13 +10,15 @@ import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.withLock
 
-class AndroidByteArrayCache(context: Context) : ByteArrayCache {
+class AndroidByteArrayCache(
+    baseCachePath: String?
+) : ByteArrayCache {
 
     private val locks = ConcurrentHashMap<String, ReadWriteLock>()
     private val lruCache: DiskLruCache
 
     init {
-        val cacheDir = File(context.cacheDir, "byteCache")
+        val cacheDir = File(baseCachePath, "byteCache")
 
         lruCache = DiskLruCache.open(
             cacheDir, VERSION_CODE,
@@ -60,6 +61,17 @@ class AndroidByteArrayCache(context: Context) : ByteArrayCache {
     override fun removeIfExists(key: String): Boolean = runCatching {
         lock(key).writeLock().withLock { lruCache.remove(key) }
     }.getOrNull() ?: false
+
+    override fun clear(): Boolean = runCatching {
+        val locks = locks.values.map { it.writeLock() }
+
+        locks.forEach { it.lock() }
+        try {
+            lruCache.delete()
+        } finally {
+            locks.forEach { it.unlock() }
+        }
+    }.isSuccess
 
     private fun lock(key: String): ReadWriteLock =
         locks.getOrPut(key) { ReentrantReadWriteLock() }

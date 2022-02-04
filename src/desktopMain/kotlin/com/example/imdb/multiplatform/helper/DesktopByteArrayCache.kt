@@ -1,6 +1,5 @@
 package com.example.imdb.multiplatform.helper
 
-import com.example.imdb.multiplatform.di.provide
 import com.example.imdb.multiplatform.helpers.ByteArrayCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
@@ -14,19 +13,20 @@ import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.withLock
 
-class DesktopByteArrayCache : ByteArrayCache {
+class DesktopByteArrayCache(
+    parentJob: Job,
+    baseCachePath: String?
+) : ByteArrayCache {
     private val locks = ConcurrentHashMap<String, ReadWriteLock>()
 
     private val cacheDir: File? = runCatching {
-        System.getProperty("java.io.tmpdir")?.let { path ->
-            File(path, "imdb_DesktopByteArrayCache_byteCache").apply {
-                if (!exists()) mkdir()
-            }
+        File(baseCachePath, "imdb_DesktopByteArrayCache_byteCache").apply {
+            if (!exists()) mkdir()
         }
     }.getOrNull()
 
     init {
-        CoroutineScope(provide<Job>() + Default).launch {
+        CoroutineScope(parentJob + Default).launch {
             // Remove all expired files.
             cacheDirectoryOrNull()?.listFiles()?.forEach { file ->
                 file?.name?.let { restoreOrNull(it) }
@@ -74,6 +74,19 @@ class DesktopByteArrayCache : ByteArrayCache {
         val cacheFile = cacheFileOrNull(key = key, createIfNotExists = false) ?: return false
         lock(key).writeLock().withLock { cacheFile.delete() }
     }.getOrNull() ?: false
+
+    override fun clear(): Boolean = runCatching {
+        val cacheDir = cacheDirectoryOrNull() ?: return false
+
+        val locks = locks.values.map { it.writeLock() }
+
+        locks.forEach { it.lock() }
+        try {
+            cacheDir.deleteRecursively()
+        } finally {
+            locks.forEach { it.unlock() }
+        }
+    }.isSuccess
 
     private fun lock(key: String): ReadWriteLock =
         locks.getOrPut(key) { ReentrantReadWriteLock() }

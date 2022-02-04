@@ -99,6 +99,14 @@ kotlin {
             }
         }
 
+        val commonTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-common:${Ver.kotlin}")
+                implementation("org.jetbrains.kotlin:kotlin-test-annotations-common:${Ver.kotlin}")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Ver.coroutines}")
+            }
+        }
+
         val desktopMain by getting {
             dependsOn(commonMain)
 
@@ -118,6 +126,12 @@ kotlin {
 
                 implementation("com.arkivanov.decompose:decompose-jvm:${Ver.decompose}")
                 implementation("com.arkivanov.decompose:extensions-compose-jetbrains:${Ver.decompose}")
+            }
+        }
+
+        val desktopTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-junit:${Ver.kotlin}")
             }
         }
 
@@ -159,6 +173,12 @@ kotlin {
                 implementation("androidx.lifecycle:lifecycle-common-java8:${Ver.lifecycle}")
                 implementation("androidx.activity:activity:${Ver.activity}")
                 implementation("androidx.activity:activity-compose:${Ver.activity}")
+            }
+        }
+
+        val androidTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-junit:${Ver.kotlin}")
             }
         }
     }

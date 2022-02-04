@@ -13,9 +13,11 @@ val commonModule = module {
 
     single<ViewModelStore> { ViewModelStore() }
 
+    single<MurmurHash3> { MurmurHash3() }
+
     single<CacheManager> {
         CacheManager(
-            hash = MurmurHash3(),
+            hash = provide<MurmurHash3>(),
             byteArrayCache = provide<ByteArrayCache>()
         )
     }
